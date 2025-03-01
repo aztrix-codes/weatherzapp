@@ -1271,6 +1271,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
 
+
   useEffect(() => {
     Orientation.lockToPortrait();
   }, []);
@@ -1471,31 +1472,20 @@ const App = () => {
   
   useEffect(() => {
     fetchWeatherData(currentCity);
-  }, []);
-
-  const getFormattedDay = () => {
-    return new Date()
-      .toLocaleDateString('en-US', {weekday: 'long'})
-      .toUpperCase();
-  };
-
+    
+    const intervalId = setInterval(() => {
+      fetchWeatherData(currentCity);
+    }, 60000);
+    
+    return () => clearInterval(intervalId);
+  }, [currentCity]);
   
-  const getCityDate = (dt, timezoneOffset) => {
-    return new Date((dt + timezoneOffset) * 1000).toLocaleDateString('en-US', {
-      weekday: 'long', 
-      day: 'numeric',  
-      month: 'short',  
-      year: 'numeric'  
-    });
-  };
   
-  const formatCityTime = (timestamp, timezoneOffset) => {
-    return new Date((timestamp + timezoneOffset) * 1000).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
-  };
+
+
+ 
+  
+
 
    const formatTime = (timestamp, timezoneOffset) => {
     if (!timestamp || typeof timestamp !== "number") return "Invalid Time";
@@ -1503,7 +1493,7 @@ const App = () => {
       
     const date = new Date(timestamp * 1000);
     
-    const browserTimezoneOffset = date.getTimezoneOffset() * 60; // in seconds
+    const browserTimezoneOffset = date.getTimezoneOffset() * 60; 
     
     const adjustedDate = new Date((timestamp + timezoneOffset + browserTimezoneOffset) * 1000);
     
@@ -1580,14 +1570,7 @@ const App = () => {
       <StatusBar barStyle={theme.statusBar} />
 
       <View style={styles.header}>
-        <View>
-          <Text style={[styles.cityName, {color: theme.text}]}>
-            {currentCity}
-          </Text>
-          <Text style={[styles.dateTime, {color: theme.secondaryText}]}>
-          {getCityDate(weatherData.dt, weatherData.timezone)} | {formatCityTime(weatherData.dt, weatherData.timezone)}
-          </Text>
-        </View>
+        <View></View>
 
         <TouchableOpacity
           style={styles.menuButton}
@@ -1607,6 +1590,10 @@ const App = () => {
               <MoonIcon />
             )}
           </View>
+
+          <Text style={[styles.cityName, {color: theme.text}]}>
+            {currentCity}
+          </Text>
 
           <Text style={[styles.temperature, {color: theme.text}]}>
             {Math.round(weatherData.main.temp)}°C
@@ -1773,7 +1760,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   cityName: {
-    fontSize: 28,
+    fontSize: 50,
     fontWeight: '500',
     letterSpacing: 0.5,
   },
