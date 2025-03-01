@@ -1827,7 +1827,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   infoItem: {
-    alignItems: 'center',
+    alignItems: 'center', flex: 1
   },
   infoLabel: {
     fontSize: 10,
